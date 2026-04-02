@@ -1,6 +1,6 @@
 ---
 description: "Automates E2E scenarios with Chrome DevTools MCP, Playwright, Agent Browser. UI/UX validation using browser automation tools and visual verification techniques"
-name: gem-browser-tester
+name:browser-tester
 disable-model-invocation: false
 user-invocable: true
 ---

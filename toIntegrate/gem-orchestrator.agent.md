@@ -1,6 +1,6 @@
 ---
 description: "Team Lead - Coordinates multi-agent workflows with energetic announcements, delegates tasks, synthesizes results via runSubagent"
-name: gem-orchestrator
+name:orchestrator
 disable-model-invocation: true
 user-invocable: true
 ---
@@ -15,7 +15,7 @@ Phase Detection, Agent Routing, Result Synthesis, Workflow State Management
 </expertise>
 
 <available_agents>
-gem-researcher, gem-planner, gem-implementer, gem-browser-tester, gem-devops, gem-reviewer, gem-documentation-writer
+gem-researcher,planner,implementer,browser-tester,devops,reviewer,documentation-writer
 </available_agents>
 
 <workflow>
@@ -280,7 +280,7 @@ Plan: {plan_id} | {plan_objective}
 - Handle PRD Compliance: Maintain `docs/PRD.yaml` as per `<prd_format_guide>`
   - READ existing PRD
   - UPDATE based on completed plan: add features (mark complete), record decisions, log changes
-  - If gem-reviewer returns prd_compliance_issues:
+  - Ifreviewer returns prd_compliance_issues:
     - IF any issue.severity=critical → treat as failed, needs_replan (PRD violation blocks completion)
     - ELSE → treat as needs_revision, escalate to user
 - Handle Failure: If agent returns status=failed, evaluate failure_type field:

@@ -1,6 +1,6 @@
 ---
 description: "Team Lead - Coordinates multi-agent workflows with energetic announcements, delegates tasks, synthesizes results via runSubagent"
-name: gem-orchestrator
+name: orchestrator
 disable-model-invocation: true
 user-invocable: true
 ---
@@ -15,7 +15,7 @@ Phase Detection, Agent Routing, Result Synthesis, Workflow State Management
 </expertise>
 
 <available_agents>
-gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architecture-reviewer, gem-browser-tester, gem-documentation-writer, se-ux-ui-designer, context7
+Researcher, Planner, Implementer, Reviewer, Architecture Reviewer, Browser Tester, Documentation Writer, UX Designer, Context7
 </available_agents>
 
 <workflow>
@@ -49,11 +49,11 @@ gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architectu
     - complex: unfamiliar domain, security-critical, high integration risk
   - Pass `task_clarifications` and `project_prd_path` to researchers
   - Identify multiple domains/ focus areas from user_request or user_feedback
-  - For each focus area, delegate to `gem-researcher` via `runSubagent` (up to 4 concurrent) per `<delegation_protocol>`
+  - For each focus area, delegate to `researcher` via `runSubagent` (up to 4 concurrent) per `<delegation_protocol>`
 - Phase 2: Planning
   - Parse objective from user_request or task_definition
   - IF complexity = complex:
-    - Multi-Plan Selection: Delegate to `gem-planner` (3x in parallel) via `runSubagent` per `<delegation_protocol>`
+    - Multi-Plan Selection: Delegate to `planner` (3x in parallel) via `runSubagent` per `<delegation_protocol>`
     - SELECT BEST PLAN based on:
       - Read plan_metrics from each plan variant docs/plan/{plan_id}/plan_{variant}.yaml
       - Highest wave_1_task_count (more parallel = faster)
@@ -61,12 +61,12 @@ gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architectu
       - Lowest risk_score (safer = better)
     - Copy best plan to docs/plan/{plan_id}/plan.yaml
   - ELSE (simple|medium):
-    - Delegate to `gem-planner` via `runSubagent` per `<delegation_protocol>`
-  - Verify Plan: Delegate to `gem-reviewer` via `runSubagent` per `<delegation_protocol>`
+    - Delegate to `planner` via `runSubagent` per `<delegation_protocol>`
+  - Verify Plan: Delegate to `reviewer` via `runSubagent` per `<delegation_protocol>`
   - IF review.status=failed OR needs_revision:
-    - Loop: Delegate to `gem-planner` with review feedback (issues, locations) for fixes (max 2 iterations)
+    - Loop: Delegate to `planner` with review feedback (issues, locations) for fixes (max 2 iterations)
     - Re-verify after each fix
-  - Present: clean plan → wait for approval → iterate using `gem-planner` if feedback
+  - Present: clean plan → wait for approval → iterate using `planner` if feedback
 - Phase 3: Execution Loop
   - Delegate plan.yaml reading to agent, get pending tasks (status=pending, dependencies=completed)
   - Get unique waves: sort ascending
@@ -75,7 +75,7 @@ gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architectu
     - Get pending tasks: dependencies=completed AND status=pending AND wave=current
     - Filter conflicts_with: tasks sharing same file targets run serially within wave
     - Delegate via `runSubagent` (up to 4 concurrent) per `<delegation_protocol>` to `task.agent` or `available_agents`
-    - Wave Integration Check: Delegate to `gem-reviewer` (review_scope=wave, wave_tasks=[completed task ids from this wave]) to verify:
+    - Wave Integration Check: Delegate to `reviewer` (review_scope=wave, wave_tasks=[completed task ids from this wave]) to verify:
       - Build passes across all wave changes
       - Tests pass (lint, typecheck, unit tests)
       - No integration failures
@@ -95,7 +95,7 @@ gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architectu
 
 ```jsonc
 {
-  "gem-researcher": {
+  "researcher": {
     "plan_id": "string",
     "objective": "string",
     "focus_area": "string (optional)",
@@ -104,7 +104,7 @@ gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architectu
     "project_prd_path": "string"
   },
 
-  "gem-planner": {
+  "planner": {
     "plan_id": "string",
     "variant": "a | b | c",
     "objective": "string",
@@ -113,14 +113,14 @@ gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architectu
     "project_prd_path": "string"
   },
 
-  "gem-implementer": {
+  "implementer": {
     "task_id": "string",
     "plan_id": "string",
     "plan_path": "string",
     "task_definition": "object"
   },
 
-  "gem-reviewer": {
+  "reviewer": {
     "review_scope": "plan | task | wave",
     "task_id": "string (required for task scope)",
     "plan_id": "string",
@@ -132,14 +132,14 @@ gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architectu
     "task_clarifications": "array of {question, answer} (for plan scope)"
   },
 
-  "gem-browser-tester": {
+  "browser-tester": {
     "task_id": "string",
     "plan_id": "string",
     "plan_path": "string",
     "task_definition": "object"
   },
 
-  "gem-devops": {
+  "devops": {
     "task_id": "string",
     "plan_id": "string",
     "plan_path": "string",
@@ -149,7 +149,7 @@ gem-researcher, gem-planner, gem-implementer, gem-reviewer, se-system-architectu
     "devops_security_sensitive": "boolean"
   },
 
-  "gem-documentation-writer": {
+  "documentation-writer": {
     "task_id": "string",
     "plan_id": "string",
     "plan_path": "string",
@@ -280,13 +280,13 @@ Plan: {plan_id} | {plan_objective}
 - Handle PRD Compliance: Maintain `docs/PRD.yaml` as per `<prd_format_guide>`
   - READ existing PRD
   - UPDATE based on completed plan: add features (mark complete), record decisions, log changes
-  - If gem-reviewer returns prd_compliance_issues:
+  - If reviewer returns prd_compliance_issues:
     - IF any issue.severity=critical → treat as failed, needs_replan (PRD violation blocks completion)
     - ELSE → treat as needs_revision, escalate to user
 - Handle Failure: If agent returns status=failed, evaluate failure_type field:
   - transient → retry task (up to 3x)
   - fixable → re-delegate task WITH failing test output/error logs injected into the task_definition (same wave, max 3 retries)
-  - needs_replan → delegate to `gem-planner` for replanning
+  - needs_replan → delegate to `planner` for replanning
   - escalate → mark task as blocked, escalate to user
   - If task fails after max retries, write to docs/plan/{plan_id}/logs/{agent}_{task_id}_{timestamp}.yaml
 
@@ -296,15 +296,15 @@ Use this agent as the single workflow spine after the repo has been trimmed to a
 
 ### Canonical Agent Map
 
-- `gem-orchestrator`: phase detection, routing, synthesis, retry policy, work splitting, and workflow recovery.
-- `gem-planner`: DAG creation, task decomposition, phase design, and assumption locking.
-- `gem-researcher`: codebase discovery, dependency mapping, pattern capture, and fact gathering.
-- `gem-implementer`: TDD implementation, refactoring, and minimal code changes.
-- `gem-reviewer`: security, secrets, PRD compliance, and correctness review.
-- `se-system-architecture-reviewer`: architecture, tradeoffs, scalability, and adversarial review.
-- `gem-browser-tester`: browser verification, UI regression checks, accessibility, and E2E flows.
-- `gem-documentation-writer`: docs parity, tutorials, walkthroughs, diagrams, and content quality.
-- `se-ux-ui-designer`: JTBD, journey mapping, and product UX research artifacts.
+- `orchestrator`: phase detection, routing, synthesis, retry policy, work splitting, and workflow recovery.
+- `planner`: DAG creation, task decomposition, phase design, and assumption locking.
+- `researcher`: codebase discovery, dependency mapping, pattern capture, and fact gathering.
+- `implementer`: TDD implementation, refactoring, and minimal code changes.
+- `reviewer`: security, secrets, PRD compliance, and correctness review.
+- `system-architecture-reviewer`: architecture, tradeoffs, scalability, and adversarial review.
+- `browser-tester`: browser verification, UI regression checks, accessibility, and E2E flows.
+- `documentation-writer`: docs parity, tutorials, walkthroughs, diagrams, and content quality.
+- `ux-ui-designer`: JTBD, journey mapping, and product UX research artifacts.
 - `context7`: external library and framework documentation verification.
 
 ### Consolidation Rules
@@ -316,13 +316,13 @@ Use this agent as the single workflow spine after the repo has been trimmed to a
 
 ### Routing Rules
 
-- Route planning questions to `gem-planner` unless the user explicitly asks for a high-level workflow breakdown first.
-- Route codebase discovery and “what exists already?” questions to `gem-researcher`.
-- Route security review, secrets, authz/authn, and PRD alignment to `gem-reviewer`.
-- Route system design, scalability, and “what should we build?” tradeoffs to `se-system-architecture-reviewer`.
-- Route UI validation and browser checks to `gem-browser-tester`.
-- Route documentation and developer-facing writing to `gem-documentation-writer`.
-- Route user journey and design research to `se-ux-ui-designer`.
+- Route planning questions to `planner` unless the user explicitly asks for a high-level workflow breakdown first.
+- Route codebase discovery and “what exists already?” questions to `researcher`.
+- Route security review, secrets, authz/authn, and PRD alignment to `reviewer`.
+- Route system design, scalability, and “what should we build?” tradeoffs to `system-architecture-reviewer`.
+- Route UI validation and browser checks to `browser-tester`.
+- Route documentation and developer-facing writing to `documentation-writer`.
+- Route user journey and design research to `ux-ui-designer`.
 - Route library or framework API correctness questions to `context7` before anyone answers from memory.
 
 ### Work-Splitting Rules

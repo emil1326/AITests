@@ -1,32 +1,31 @@
 ---
 name: review-checklist
-description: Review code for correctness, regressions, security issues, performance problems, and missing tests.
+description: Tactical review checklist that applies code-review-generic.instructions.md to diffs and nearby code.
 ---
 
 # Review Checklist Skill
 
-Use this skill when the task is to review code, audit a diff, or check whether a change is safe.
-
-## When to Use This Skill
-
-- You need to review a diff before merge.
-- You need to check whether a change introduces regressions or missing tests.
-- You need a concrete bug-focused review rather than a style pass.
-- You need to confirm that a change still matches the repo's contracts.
+Use this skill when you need a fast, bug-focused pass over a diff.
 
 ## Before You Start
 
 - Read the global instructions.
+- Read [code-review-generic.instructions.md](../../instructions/code-review-generic.instructions.md).
 - Read the shared lessons file.
-- Read the relevant agent lesson file if one exists.
 - Inspect the diff and nearby code before concluding.
 
 ## What This Skill Is For
 
-- Catching concrete breakages before merge.
-- Separating real defects from style opinions.
-- Looking for regression risk in the changed code and adjacent code.
-- Producing findings that a developer can act on immediately.
+- Fast defect detection on a concrete diff.
+- Turning the generic review policy into an actionable pass.
+- Capturing regression risk without re-teaching review theory.
+
+## Tactical Flow
+
+1. Check behavior and contracts first.
+2. Check security and data handling next.
+3. Check performance and test coverage after that.
+4. Separate confirmed defects from open questions.
 
 ## Review Checklist
 
@@ -36,15 +35,6 @@ Use this skill when the task is to review code, audit a diff, or check whether a
 - Are tests covering the risky branch?
 - Could the change break existing consumers or adjacent files?
 
-## Controlled Flow
-
-1. Read the diff and the surrounding code path.
-2. Look for behavior mismatches first.
-3. Check security and data handling next.
-4. Check performance and regression risk after that.
-5. Note missing tests, missing validation, or mismatched docs.
-6. Separate confirmed findings from questions.
-
 ## Hard Limits
 
 - Do not waste findings on style unless style creates a bug risk.
@@ -53,21 +43,8 @@ Use this skill when the task is to review code, audit a diff, or check whether a
 
 ## Finding Format
 
-### Good Finding
-
-- `High`: Missing validation on an endpoint that accepts user input.
-- File and line reference.
-- Why it matters.
-- Suggested fix.
-
-### Weak Finding
-
-- `Low`: I would maybe prefer a different naming style.
-
-Why this is weak:
-
-- It does not describe a defect or regression.
-- It is preference, not evidence.
+- High-priority findings need a file/line reference, impact, and smallest fix.
+- Low-priority preferences without a failure mode do not count as findings.
 
 ## Output Contract
 

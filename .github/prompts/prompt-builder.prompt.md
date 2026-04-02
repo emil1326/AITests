@@ -1,5 +1,5 @@
 ---
-name: prompt-builder
+name: Prompt Builder
 description: "Turn a one-off request into a reusable prompt, skill, or agent with clear scope, discovery, and output rules."
 argument-hint: "the workflow or task you want to turn into a reusable artifact"
 ---

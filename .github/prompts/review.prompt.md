@@ -21,6 +21,7 @@ Review the change as if it were going to land in production.
 ## Before You Review
 
 - Read AGENTS.md, the relevant instructions, and the shared lessons file.
+- If the repo has a dedicated review skill, use it alongside the generic review instruction instead of restating the same checklist.
 - Check the matching agent lesson file if one exists.
 - Inspect the changed files and nearby code before forming conclusions.
 - If the review spans many files, use the manager-agent workflow to split the pass by concern.

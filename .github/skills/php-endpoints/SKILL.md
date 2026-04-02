@@ -18,7 +18,7 @@ Use this skill when the task touches backend PHP files or API endpoints.
 
 - Read the global instructions.
 - Read the shared lessons file.
-- Read the PHP file instructions.
+- Read the PHP safety rules in this skill.
 - Check how the frontend will call the endpoint.
 
 ## What This Skill Is For
@@ -51,6 +51,14 @@ Use this skill when the task touches backend PHP files or API endpoints.
 - Do not interpolate SQL strings.
 - Do not return ambiguous success responses that hide real failures.
 - Do not depend on framework helpers that do not exist in plain PHP.
+
+## PHP Safety Rules
+
+- Keep PHP endpoints small and explicit.
+- Validate and sanitize all input before use.
+- Use parameterized queries for MySQL access.
+- Return simple error messages and proper HTTP status codes.
+- Prefer shared-hosting-safe code over framework-heavy patterns.
 
 ## Concrete Patterns
 

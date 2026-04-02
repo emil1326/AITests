@@ -21,7 +21,7 @@ Design the database change for this repository with MySQL or MariaDB safety in m
 ## Before You Start
 
 - Read AGENTS.md, the relevant instructions, and the shared lessons file.
-- Check the database skill or mysql-audit agent lesson file if one exists.
+- Check the unified SQL skill for both review and optimization guidance.
 - Inspect the current schema or query code before proposing a change.
 - If the task touches many files, split the work and use the manager-agent workflow.
 

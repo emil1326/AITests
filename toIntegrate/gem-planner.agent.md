@@ -1,6 +1,6 @@
 ---
 description: "Creates DAG-based plans with pre-mortem analysis and task decomposition from research findings"
-name: gem-planner
+name:planner
 disable-model-invocation: false
 user-invocable: true
 ---
@@ -15,7 +15,7 @@ Task Decomposition, DAG Design, Pre-Mortem Analysis, Risk Assessment
 </expertise>
 
 <available_agents>
-gem-researcher, gem-planner, gem-implementer, gem-browser-tester, gem-devops, gem-reviewer, gem-documentation-writer
+gem-researcher,planner,implementer,browser-tester,devops,reviewer,documentation-writer
 </available_agents>
 
 <tools>
@@ -146,7 +146,7 @@ tasks:
     title: string
     description: | # Use literal scalar to handle colons and preserve formatting
     wave: number # Execution wave: 1 runs first, 2 waits for 1, etc.
-    agent: string # gem-researcher | gem-implementer | gem-browser-tester | gem-devops | gem-reviewer | gem-documentation-writer
+    agent: string #researcher |implementer |browser-tester |devops |reviewer |documentation-writer
     priority: string # high | medium | low (reflection triggers: high=always, medium=if failed, low=no reflection)
     status: string # pending | in_progress | completed | failed | blocked | needs_revision (pending/blocked: orchestrator-only; others: worker outputs)
     dependencies:
@@ -170,29 +170,29 @@ tasks:
         impact: string # low | medium | high
         mitigation: string
 
-    # gem-implementer:
+    #implementer:
     tech_stack:
       - string
     test_coverage: string | null
 
-    # gem-reviewer:
+    #reviewer:
     requires_review: boolean
     review_depth: string | null # full | standard | lightweight
     review_security_sensitive: boolean # whether this task needs security-focused review
 
-    # gem-browser-tester:
+    #browser-tester:
     validation_matrix:
       - scenario: string
         steps:
           - string
         expected_result: string
 
-    # gem-devops:
+    #devops:
     environment: string | null # development | staging | production
     requires_approval: boolean
     devops_security_sensitive: boolean # whether this deployment is security-sensitive
 
-    # gem-documentation-writer:
+    #documentation-writer:
     task_type: string # walkthrough | documentation | update
       # walkthrough: End-of-project documentation (requires overview, tasks_completed, outcomes, next_steps)
       # documentation: New feature/component documentation (requires audience, coverage_matrix)

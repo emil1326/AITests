@@ -3,7 +3,7 @@ name: prompt-builder
 description: Turn a one-off request into a reusable prompt, skill, or agent with clear scope, discovery, and output rules.
 ---
 
-# Professional Prompt Builder
+# Prompt Builder
 
 Use this skill when a task should become a reusable prompt, skill, or agent.
 

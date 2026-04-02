@@ -232,6 +232,32 @@ WHERE order_date >= '2024-01-01'
   AND order_date < '2025-01-01';
 ```
 
+## 📈 Query Optimization Playbook
+
+### Pagination Strategy
+- Prefer cursor or keyset pagination for large result sets.
+- Use OFFSET only when the result set is small and stable.
+- Keep ORDER BY deterministic so pages do not drift.
+
+### Batch Operations
+- Prefer multi-row inserts over row-by-row loops.
+- Group repeated updates when the schema allows it.
+- Keep transactions short and explicit.
+
+### Temporary and Derived Data
+- Use CTEs or temporary tables when they make complex logic clearer and faster.
+- Avoid repeated correlated subqueries when a join or aggregate can compute the same result once.
+
+### Index Management
+- Match index order to real filter and sort patterns.
+- Add composite indexes only for observed query paths.
+- Remove or flag indexes that are no longer justified by the workload.
+
+### Execution Plan Checks
+- Review the query plan for the changed statement.
+- Verify that the intended index is still used after the rewrite.
+- Note any data-volume assumptions that affect the optimization.
+
 ## 📋 SQL Review Checklist
 
 ### Security
@@ -247,6 +273,9 @@ WHERE order_date >= '2024-01-01'
 - [ ] JOINs are optimized and use appropriate types
 - [ ] WHERE clauses are selective and use indexes
 - [ ] Subqueries are optimized or converted to JOINs
+- [ ] Large result sets use cursor-based pagination where practical
+- [ ] Repeated writes use batch operations when safe
+- [ ] Query plans were checked for the changed statements
 
 ### Code Quality
 - [ ] Consistent naming conventions
@@ -261,6 +290,7 @@ WHERE order_date >= '2024-01-01'
 - [ ] Indexes support query patterns
 - [ ] Foreign key relationships are defined
 - [ ] Default values are appropriate
+- [ ] Temp tables or CTEs are used only when they improve clarity or performance
 
 ## 🎯 Review Output Format
 
